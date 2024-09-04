@@ -50,13 +50,13 @@ export const createAuthor = async (req, res) => {
 
 export const updateAuthor = async (req, res) => {
 	const id = parseInt(req.params.id);
-	const { firstName, lastName, nationality, birthdate } = req.body;
+	const { firstname, lastname, nationality, birthdate } = req.body;
 	try {
 		const authorUpdate = await prisma.author.update({
 			where: { id },
 			data: {
-				...(firstName && { firstName }),
-				...(lastName && { lastName }),
+				...(firstname && { firstname }),
+				...(lastname && { lastname }),
 				...(nationality && { nationality }),
 				...(birthdate && { birthdate: new Date(birthdate) })
 			}
