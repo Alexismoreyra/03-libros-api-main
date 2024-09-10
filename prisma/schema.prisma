@@ -22,7 +22,7 @@ model Book {
   createAt  DateTime @default(now())
   author    Author @relation(fields: [authorId], references: [id])
   authorId  Int
-  updateAt  DateTime @updatedAt
+  updateAt  DateTime @updatedAt 
 }
 
 model Author {
@@ -45,4 +45,5 @@ model User {
   active      DateTime
   createAt    DateTime  @default(now()) 
   updateAt    DateTime  @updatedAt
+  Active      Boolean   @default(true)
 }

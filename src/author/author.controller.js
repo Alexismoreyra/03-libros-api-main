@@ -6,7 +6,7 @@ export const getAuthors = async (req, res) => {
 
 		res.json(authors);
 	} catch (error) {
-		res.status(500).json({ error: 'Error al obtener de autor' });
+		res.status(500).json({ error: 'Error al obtener el autor' });
 	}
 };
 
@@ -66,7 +66,7 @@ export const updateAuthor = async (req, res) => {
 		}
 		res.json(authorUpdate);
 	} catch (error) {
-		res.status(500).json({ error: 'Error al actulizar autor' });
+		res.status(500).json({ error: 'Error al actualizar autor' });
 	}
 };
 
