@@ -17,5 +17,10 @@ app.use('/api', authorsRoutes);
 app.use('/api', userRoutes);
 
 app.listen(port, () => {
+	console.log(`Server funcionando`);
+});
+
+/*app.listen(port, () => {
 	console.log(`Server funcionando en http://localhost:${port}`);
 });
+*/
