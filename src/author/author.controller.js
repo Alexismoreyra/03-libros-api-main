@@ -1,82 +1,58 @@
-import prisma from './../../prisma/prismaClient.js';
+import {
+	createAuthor,
+	deleteAuthor,
+	getAuthor,
+	getAuthors,
+	updateAuthor
+} from './author.service.js';
 
-export const getAuthors = async (req, res) => {
+export const getAuthorsController = async (req, res) => {
 	try {
-		const authors = await prisma.book.findMany();
-
-		res.json(authors);
-	} catch (error) {
-		res.status(500).json({ error: 'Error al obtener el autor' });
-	}
-};
-
-export const getAuthor = async (req, res) => {
-	const id = parseInt(req.params.id);
-	try {
-		const author = await prisma.author.findUniqueOrThrow({
-			where: { id }
-		});
-
+		const author = await getAuthors();
 		res.json(author);
 	} catch (error) {
 		res.status(500).json({ error: 'Error al obtener el autor' });
 	}
 };
 
-export const createAuthor = async (req, res) => {
+export const getAuthorController = async (req, res) => {
 	try {
-		const { firstname, lastname, nationality, birthdate } = req.body;
+		const id = parseInt(req.params.id);
+		const author = await getAuthor(id);
+		res.json(author);
+	} catch (error) {
+		res.status(500).json({ error: 'Error al obtener el autor' });
+	}
+};
 
-		// const firstname = req.body.firstname;
-		// const lastname = req.body.lastname;
-		// const nationality = req.body.nationality;
-		// const birthdate = req.body.birthdate;
-
-		const author = await prisma.author.create({
-			data: {
-				firstname,
-                lastname,
-                nationality,
-                birthdate: new Date(birthdate) //cambio
-			}
-		});
-
+export const createAuthorController = async (req, res) => {
+	try {
+		const author = await createAuthor(req.body);
 		res.status(201).json(author);
 	} catch (error) {
-		console.log(error);
 		res.status(500).json({ error: 'Error al crear autor' });
 	}
 };
 
-export const updateAuthor = async (req, res) => {
+export const updateAuthorController = async (req, res) => {
 	const id = parseInt(req.params.id);
-	const { firstname, lastname, nationality, birthdate } = req.body;
 	try {
-		const authorUpdate = await prisma.author.update({
-			where: { id },
-			data: {
-				...(firstname && { firstname }),
-				...(lastname && { lastname }),
-				...(nationality && { nationality }),
-				...(birthdate && { birthdate: new Date(birthdate) })
-			}
-		});
-		if (!authorUpdate) {
+		const author = await updateAuthor(id, req.body);
+		if (!author) {
 			throw new Error();
 		}
-		res.json(authorUpdate);
+		res.json(author);
 	} catch (error) {
 		res.status(500).json({ error: 'Error al actualizar autor' });
 	}
 };
 
-export const deleteAuthor = async (req, res) => {
+export const deleteAuthorController = async (req, res) => {
 	const id = parseInt(req.params.id);
 	try {
-		const authorDelete = await prisma.author.delete({ where: { id } });
-		res.json({ msg: 'Autor borrado correctamente!' });
+		const author = await deleteAuthor(id);
+		res.json(author);
 	} catch (error) {
-		res.status(500).json({ error: 'Error al borrar el autor' });
+		res.status(204).json({ error: 'Error al borrar el autor' });
 	}
 };
-

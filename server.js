@@ -1,11 +1,13 @@
+import 'dotenv/config';
 import express from 'express';
 import booksRoutes from './src/book/book.routes.js';
-import authorsRoutes from './src/author/author.routes.js'
-import userRoutes from './src/user/user.routes.js'
-import authRoutes from './src/user/auth.routes.js'
+import authorsRoutes from './src/author/author.routes.js';
+import usersRoutes from './src/user/user.routes.js';
+import authRoutes from './src/auth/auth.routes.js';
+import { createBook, getBooks } from './src/book/book.service.js';
 
 const app = express();
-const port = 3000;
+const port = parseInt(process.env.APIBOOK_PORT) || 3000;
 
 app.use(express.json());
 
@@ -15,14 +17,12 @@ app.get('/', (req, res) => {
 
 app.use('/api', booksRoutes);
 app.use('/api', authorsRoutes);
-app.use('/api', userRoutes);
+app.use('/api', usersRoutes);
 app.use('/api', authRoutes);
 
-app.listen(port, () => {
-	console.log(`Server funcionando`);
-});
+const total_de_libros = await getBooks();
 
-/*app.listen(port, () => {
+console.log(`TOTAL LIBROS : ${total_de_libros.length}`);
+app.listen(port, () => {
 	console.log(`Server funcionando en http://localhost:${port}`);
 });
-*/

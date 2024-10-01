@@ -1,77 +1,72 @@
+import {
+	createUser,
+	deleteUser,
+	getAllUsers,
+	getUserById,
+	updateUser
+} from './user.service.js';
 
-
-import prisma from './../../prisma/prismaClient.js';
-
-export const getUsers = async (req, res) => {
+export const getAllUsersController = async (req, res) => {
 	try {
-		const user = await prisma.book.findMany();
+		const users = await getAllUsers();
+		res.status(200).json(users);
+	} catch (error) {
+		res.status(500).json({ msg: 'Error al obtener los usuarios' });
+	}
+};
 
-		res.json(user);
+export const getUserByIdController = async (req, res) => {
+	try {
+		const id = parseInt(req.params.id);
+		const user = await getUserById(id);
+		if (!user) {
+			return res
+				.status(404)
+				.json({ msg: 'No se encontro al usuario ingresado' });
+		}
+		res.status(200).json(user);
 	} catch (error) {
 		res.status(500).json({ error: 'Error al obtener el usuario' });
 	}
 };
 
-export const getAuthor = async (req, res) => {
-	const id = parseInt(req.params.id);
+export const createUserController = async (req, res) => {
 	try {
-		const author = await prisma.author.findUniqueOrThrow({
-			where: { id }
-		});
-
-		res.json(author);
-	} catch (error) {
-		res.status(500).json({ error: 'Error al obtener el autor' });
-	}
-};
-
-export const createUser = async (req, res) => {
-	try {
-		const { firstname, lastname, email, password } = req.body;
-
-		const user = await prisma.user.create({
-			data: {
-				firstname,
-                lastname,
-                email,
-                password
-			}
-		});
-
+		const user = await createUser(req.body);
 		res.status(201).json(user);
 	} catch (error) {
-		console.log(error);
 		res.status(500).json({ error: 'Error al crear usuario' });
 	}
 };
 
-export const updateUser = async (req, res) => {
-	const id = parseInt(req.params.id);
-	const {firstname, lastname, password} = req.body;
+export const updateUserController = async (req, res) => {
 	try {
-		const userUpdate = await prisma.user.update({
-			where: { id },
-			data: {
-				...(firstname && {firstname}),
-				...(lastname && {lastname}),
-				...(password && {password})
-			}
-		});
-		if (!userUpdate) {
-			throw new Error();
+		const id = parseInt(req.params.id);
+		const user = await updateUser(id, req.body);
+		if (!existUser(id)) {
+			return res.status(404).json({ msg: 'Usuario no encontrado' });
 		}
-		res.json(userUpdate);
+
+		if (!user) {
+			return res.status(404).json({ msg: 'Usuario no encontrado' });
+		}
+
+		res.json(user);
 	} catch (error) {
-		res.status(500).json({ error: 'Error al actualizar usuario' });
+		res.status(500).json({ msg: 'Error al actualizar el usuario' });
 	}
 };
 
-export const deleteUser = async (req, res) => {
-	const id = parseInt(req.params.id);
+export const deleteUserController = async (req, res) => {
 	try {
-		const userDelete = await prisma.user.delete({ where:{id}});
-		res.json(userDelete);
-	} catch (error){
-		res.status(500).json({error: 'Error al borrar el usuario'});
+		const id = parseInt(req.params.id);
+		const userCheck = await deleteUser(id);
+
+		if (!userCheck) {
+			return res.status(404).json({ msg: 'Usuario no encontrado' });
+		}
+		res.status(200).json({ msg: 'Usuario eliminado con éxito' });
+	} catch (error) {
+		res.status(204).json({ error: 'Error al borrar el usuario' });
 	}
 };

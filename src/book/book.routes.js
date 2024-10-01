@@ -1,18 +1,21 @@
 import express from 'express';
 import {
 	createBookController,
-	getBooks,
-	getBook,
-	updateBook,
-	deleteBook
+	getBooksController,
+	updateBookController,
+	deleteBookController
 } from './book.controller.js';
+import { isAuthenticated } from '../middlewares/auth-middleware.js';
 
 const router = express.Router();
 
-router.get('/book', getBooks);
-router.post('/book', createBookController);
-router.get('/book/:id', getBook);
-router.patch('/book/:id', updateBook);
-router.delete('/book/:id', deleteBook);
+// PUBLIC
+router.get('/book', getBooksController);
+router.get('/book/:id', getBooksController);
+
+// AUTH
+router.post('/book', isAuthenticated, createBookController);
+router.patch('/book/:id', isAuthenticated, updateBookController);
+router.delete('/book/:id', isAuthenticated, deleteBookController);
 
 export default router;
