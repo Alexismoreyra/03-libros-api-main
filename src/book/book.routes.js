@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-	createBook,
+	createBookController,
 	getBooks,
 	getBook,
 	updateBook,
@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.get('/book', getBooks);
-router.post('/book', createBook);
+router.post('/book', createBookController);
 router.get('/book/:id', getBook);
 router.patch('/book/:id', updateBook);
 router.delete('/book/:id', deleteBook);
